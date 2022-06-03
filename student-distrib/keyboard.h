@@ -66,21 +66,22 @@
 /* Max number of history entries */
 #define HISTORY_SIZE 100
 
-typedef struct terminal{
-    int32_t current_pid;
-    int32_t screen_x;
-    int32_t screen_y;
-    int32_t view_screen_x;
-    int32_t view_screen_y;
-    int32_t interrupt_count;
-    int32_t factor;
-    // Keyboard buffer for each terminal
-    uint8_t keyboard_buffer[BUFFER_SIZE];
-    // Stores the current number of characters in the buffer for each terminal
-    int32_t keyboard_buffer_size;
+typedef struct terminal
+{
+  int32_t current_pid;
+  int32_t screen_x;
+  int32_t screen_y;
+  int32_t view_screen_x;
+  int32_t view_screen_y;
+  int32_t interrupt_count;
+  int32_t factor;
+  // Keyboard buffer for each terminal
+  uint8_t keyboard_buffer[BUFFER_SIZE];
+  // Stores the current number of characters in the buffer for each terminal
+  int32_t keyboard_buffer_size;
 } terminal_t;
 
-terminal_t terminals [NUM_TERMINALS];
+terminal_t terminals[NUM_TERMINALS];
 // Stores the value of the current terminal that is being viewed
 volatile int current_terminal_view;
 
@@ -103,15 +104,15 @@ extern void keyboard_init(void);
 extern void keyboard_handler(void);
 
 /* Initializes terminal */
-extern int32_t terminal_open(const uint8_t* filename);
+extern int32_t terminal_open(const uint8_t *filename);
 
 /* Clears terminal variables */
 extern int32_t terminal_close(int32_t fd);
 
 /* Reads from keyboard buffer into terminal buffer */
-extern int32_t terminal_read(int32_t fd, void * buf, int32_t nbytes);
+extern int32_t terminal_read(int32_t fd, void *buf, int32_t nbytes);
 
 /* Writes to the screen from buffer */
-extern int32_t terminal_write(int32_t fd, const void * buf, int32_t nbytes);
+extern int32_t terminal_write(int32_t fd, const void *buf, int32_t nbytes);
 
 #endif

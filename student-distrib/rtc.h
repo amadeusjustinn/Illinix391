@@ -27,15 +27,15 @@ extern void rtc_init(void);
 extern void rtc_handler(void);
 
 /* Initialises RTC frequency to 2 Hz */
-extern int32_t rtc_open (const uint8_t* filename);
+extern int32_t rtc_open(const uint8_t *filename);
 
 /* Unsets global variables that were set for virtualisation */
-extern int32_t rtc_close (int32_t fd);
+extern int32_t rtc_close(int32_t fd);
 
 /* Blocks until the next interrupt */
-extern int32_t rtc_read (int32_t fd, void* buf, int32_t nbytes);
+extern int32_t rtc_read(int32_t fd, void *buf, int32_t nbytes);
 
 /* Changes frequency to frequency stored in pointer */
-extern int32_t rtc_write (int32_t fd, const void* buf, int32_t nbytes);
+extern int32_t rtc_write(int32_t fd, const void *buf, int32_t nbytes);
 
 #endif

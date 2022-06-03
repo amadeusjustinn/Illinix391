@@ -16,7 +16,7 @@ file_operations_table_t file_table;
 int32_t halt(uint16_t status)
 {
     cli();
-    pcb_t * PCB_curr = (pcb_t *)(BOTTOM_KERNEL - (PROCESS_SIZE * (terminals[current_terminal_run].current_pid + 1)));
+    pcb_t *PCB_curr = (pcb_t *)(BOTTOM_KERNEL - (PROCESS_SIZE * (terminals[current_terminal_run].current_pid + 1)));
     int32_t cur_pid_temp = terminals[current_terminal_run].current_pid;
     int32_t parent_pid = PCB_curr->parent_id;
     uint32_t i;
@@ -29,7 +29,9 @@ int32_t halt(uint16_t status)
     {
         printf("Top Level Shell %d Halt\n", cur_pid_temp);
         execute_base_shell(terminals[current_terminal_run].current_pid);
-    }else{
+    }
+    else
+    {
         // Non-base shell
         lowest_free_pid = terminals[current_terminal_run].current_pid;
         num_process--;
@@ -41,12 +43,12 @@ int32_t halt(uint16_t status)
     uint32_t parent_ebp = PCB_curr->parent_saved_ebp;
     PCB_curr->active = 0;
     int j;
-    for (j = 0; j < MAX_FILE_NAME; j++){
+    for (j = 0; j < MAX_FILE_NAME; j++)
+    {
         PCB_curr->arg[j] = 0;
     }
     // Restore parent paging
     map(VIRTUAL_ADDR, BOTTOM_KERNEL + parent_pid * FOUR_MB);
-
 
     // Write parent process’ info back to TSS
     tss.ss0 = KERNEL_DS;
@@ -222,13 +224,16 @@ uint8_t parse_second_arg(const uint8_t *args)
 
     parsed_arg_length = arg2_end - arg2_start;
     // Arg too long so only copy 32 chars
-    if (parsed_arg_length <= MAX_FILE_NAME){
+    if (parsed_arg_length <= MAX_FILE_NAME)
+    {
         // Copy the argument
         for (i = 0; i < parsed_arg_length; i++)
         {
             parsed_arg[i] = (uint8_t)args[i + arg2_start];
         }
-    }else{
+    }
+    else
+    {
         // Invalid argument
         for (i = 0; i < parsed_arg_length; i++)
         {
@@ -289,15 +294,18 @@ int32_t exe_check(uint8_t *cmd, uint8_t *buffer)
 void create_pcb(int8_t terminal_num)
 {
     // Sets PID
-    pcb_t * mem_ptr;
+    pcb_t *mem_ptr;
     // Non-base shell
-    if (terminal_num == -1){
+    if (terminal_num == -1)
+    {
         mem_ptr = (pcb_t *)(BOTTOM_KERNEL - (PROCESS_SIZE * (lowest_free_pid + 1)));
         num_process++;
         pid_in_use[lowest_free_pid] = 1;
         mem_ptr->pid = lowest_free_pid;
         mem_ptr->parent_id = terminals[current_terminal_run].current_pid;
-    }else{
+    }
+    else
+    {
         // Base shell
         mem_ptr = (pcb_t *)(BOTTOM_KERNEL - (PROCESS_SIZE * (terminal_num + 1)));
         mem_ptr->pid = terminal_num;
@@ -316,7 +324,8 @@ void create_pcb(int8_t terminal_num)
     }
     // Clear arg
     int j;
-    for (j = 0; j < MAX_FILE_NAME; j++){
+    for (j = 0; j < MAX_FILE_NAME; j++)
+    {
         mem_ptr->arg[j] = 0;
     }
     // Creates file descriptor table
@@ -431,12 +440,12 @@ int32_t execute(const uint8_t *command)
     // Create new PCB
     create_pcb(-1);
     pcb_t *mem_ptr = (pcb_t *)(BOTTOM_KERNEL - (PROCESS_SIZE * (terminals[current_terminal_run].current_pid + 1)));
-    
+
     parse_second_arg(command);
 
     // Set up paging
     map(VIRTUAL_ADDR, BOTTOM_KERNEL + terminals[current_terminal_run].current_pid * FOUR_MB);
-    
+
     // Load data
     load_exe_data(buffer, num_byte);
 
@@ -445,7 +454,7 @@ int32_t execute(const uint8_t *command)
     uint32_t byte26 = buffer[EIP_BYTE3];
     uint32_t byte27 = buffer[EIP_BYTE4];
     uint32_t prog_eip = (byte27 << BYTESHIFT3) | (byte26 << BYTESHIFT2) | (byte25 << BYTESHIFT1) | byte24;
-    
+
     // Save parent esp
     register uint32_t saved_esp asm("esp");
     mem_ptr->parent_saved_esp = saved_esp;
@@ -465,7 +474,7 @@ int32_t execute_base_shell(uint8_t terminal_num)
     // MAGIC NUM: a large buffer that ensures it can fit any execute cmd given.
     uint8_t buffer[100000];
     uint8_t cmd[MAX_CMD_SIZE];
-    uint8_t * command = (uint8_t *) "shell";
+    uint8_t *command = (uint8_t *)"shell";
     parse_cmd(command, cmd);
     int32_t num_byte = exe_check(cmd, buffer);
     if (num_byte == -1)
@@ -503,7 +512,8 @@ int32_t execute_base_shell(uint8_t terminal_num)
     return 0;
 }
 
-void context_switch(void){
+void context_switch(void)
+{
     pcb_t *mem_ptr = (pcb_t *)(BOTTOM_KERNEL - (PROCESS_SIZE * (terminals[current_terminal_run].current_pid + 1)));
     // Start context switch to user mode
     tss.ss0 = KERNEL_DS;
@@ -528,19 +538,22 @@ void context_switch(void){
     Inputs: terminal_num: which terminal to switch to (0-2)
     Outputs: 0 if pass; -1 if fail
 */
-int32_t terminal_switch(int32_t terminal_num){
+int32_t terminal_switch(int32_t terminal_num)
+{
     // Don't switch if same terminal
-    if (current_terminal_view == terminal_num){
+    if (current_terminal_view == terminal_num)
+    {
         return -1;
     }
     // Don't switch for invalid terminal
-    if ((terminal_num > 2) || (terminal_num < 0)){
+    if ((terminal_num > 2) || (terminal_num < 0))
+    {
         return -1;
     }
     // Save the current terminal video memory to its backup
-    memcpy((uint8_t *) terminal_address[current_terminal_view], (uint8_t *) VIDEO, FOUR_KB_BOUNDARIES);
+    memcpy((uint8_t *)terminal_address[current_terminal_view], (uint8_t *)VIDEO, FOUR_KB_BOUNDARIES);
     // Load the new terminal backup to video memory
-    memcpy((uint8_t *) VIDEO, (uint8_t *) terminal_address[terminal_num], FOUR_KB_BOUNDARIES);
+    memcpy((uint8_t *)VIDEO, (uint8_t *)terminal_address[terminal_num], FOUR_KB_BOUNDARIES);
     // Switch terminal
     current_terminal_view = terminal_num;
     update_cursor(terminals[current_terminal_view].screen_x, terminals[current_terminal_view].screen_y);
@@ -563,7 +576,8 @@ int32_t read(int32_t fd, void *buf, int32_t nbytes)
     }
     file_descriptor_t *file_descriptor_ptr = find_pcb(fd);
     // This fd is not active
-    if (file_descriptor_ptr->flags == 0 || file_descriptor_ptr->file_operations_table_ptr->read == 0){
+    if (file_descriptor_ptr->flags == 0 || file_descriptor_ptr->file_operations_table_ptr->read == 0)
+    {
         return -1;
     }
     int32_t num_byte_read = file_descriptor_ptr->file_operations_table_ptr->read(fd, buf, nbytes);
@@ -586,7 +600,8 @@ int32_t write(int32_t fd, const void *buf, int32_t nbytes)
     }
     file_descriptor_t *file_descriptor_ptr = find_pcb(fd);
     // This fd is not active
-    if (file_descriptor_ptr->flags == 0 || file_descriptor_ptr->file_operations_table_ptr->write == 0){
+    if (file_descriptor_ptr->flags == 0 || file_descriptor_ptr->file_operations_table_ptr->write == 0)
+    {
         return -1;
     }
     int32_t num_byte_write = file_descriptor_ptr->file_operations_table_ptr->write(fd, buf, nbytes);
@@ -690,7 +705,8 @@ int32_t close(int32_t fd)
     }
     file_descriptor_t *file_descriptor_ptr = find_pcb(fd);
     // This fd is not active
-    if (file_descriptor_ptr->flags == 0){
+    if (file_descriptor_ptr->flags == 0)
+    {
         return -1;
     }
     file_descriptor_ptr->file_operations_table_ptr = 0;
@@ -716,7 +732,8 @@ int32_t getargs(uint8_t *buf, int32_t nbytes)
 
     // create pointer to the pcb
     pcb_t *mem_ptr = (pcb_t *)(BOTTOM_KERNEL - (PROCESS_SIZE * (terminals[current_terminal_run].current_pid + 1)));
-    if (strlen((int8_t *) mem_ptr->arg) == 0){
+    if (strlen((int8_t *)mem_ptr->arg) == 0)
+    {
         return -1;
     }
     // copy the args to buffer
@@ -760,8 +777,7 @@ int32_t vidmap(uint8_t **screen_start)
     page_table2[0].present = 1;
     page_table2[0].bits_31_12 = VIDEO_12;
 
-
-    uint32_t page_dir_idx = VIDEO_VIRTUAL >> DIVIDE_BY_4MB;   // 1 GB >> 22
+    uint32_t page_dir_idx = VIDEO_VIRTUAL >> DIVIDE_BY_4MB; // 1 GB >> 22
     page_directory_entry_4K_t temp;
     temp.present = 1;
     temp.read_write = 1;
@@ -773,7 +789,7 @@ int32_t vidmap(uint8_t **screen_start)
     temp.page_size = 0;
     temp.global = 0;
     temp.available_3 = 0;
-    temp.bits_31_12 = (uint32_t)page_table2 >> TWELVE; 
+    temp.bits_31_12 = (uint32_t)page_table2 >> TWELVE;
     page_directory[page_dir_idx] = temp.val;
 
     flush_TLB();

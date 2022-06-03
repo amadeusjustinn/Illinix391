@@ -36,7 +36,8 @@ typedef struct x86_desc
 /* This is a segment descriptor.  It goes in the GDT. */
 typedef struct seg_desc
 {
-    union {
+    union
+    {
         uint32_t val[2];
         struct
         {
@@ -151,7 +152,8 @@ extern tss_t tss;
     } while (0)
 
 /* An interrupt descriptor entry (goes into the IDT) */
-typedef union idt_desc_t {
+typedef union idt_desc_t
+{
     uint32_t val[2];
     struct
     {

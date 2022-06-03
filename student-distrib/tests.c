@@ -270,7 +270,8 @@ int system_call_test()
 int enable_irq_test()
 {
 	TEST_HEADER;
-	if (enable_irq(20) == -1){
+	if (enable_irq(20) == -1)
+	{
 		return PASS;
 	}
 	return FAIL;
@@ -279,7 +280,8 @@ int enable_irq_test()
 int disable_irq_test()
 {
 	TEST_HEADER;
-	if (disable_irq(20) == -1){
+	if (disable_irq(20) == -1)
+	{
 		return PASS;
 	}
 	return FAIL;
@@ -288,7 +290,8 @@ int disable_irq_test()
 int send_eoi_test()
 {
 	TEST_HEADER;
-	if (send_eoi(20) == -1){
+	if (send_eoi(20) == -1)
+	{
 		return PASS;
 	}
 	return FAIL;
@@ -302,8 +305,8 @@ void test_rtc_print()
 {
 	TEST_HEADER;
 	unsigned int i, j, freq = 2;
-	rtc_open((uint8_t *) "NULL");
-	uint8_t * buf;
+	rtc_open((uint8_t *)"NULL");
+	uint8_t *buf;
 	for (i = 0; i < 9; i++)
 	{
 		for (j = 0; j < 20; j++)
@@ -312,25 +315,28 @@ void test_rtc_print()
 			printf("1");
 		}
 		freq <<= 1;
-		rtc_write(0 ,&freq, 0);
+		rtc_write(0, &freq, 0);
 		clear();
 	}
 	rtc_close(0);
 }
 
 // Check freq that is not a power of 2
-int test_rtc_invalid_write(){
+int test_rtc_invalid_write()
+{
 	TEST_HEADER;
 	unsigned int freq = 3;
-	rtc_open((uint8_t *) "NULL");
-	if (rtc_write(0, &freq, 0) == -1){
+	rtc_open((uint8_t *)"NULL");
+	if (rtc_write(0, &freq, 0) == -1)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
 /* Test case for testing read and write terminal functions; on enter, it will output what user typed in buffer */
-void terminal_read_write_test(){
+void terminal_read_write_test()
+{
 	unsigned char buffer[128];
 	while (1)
 	{
@@ -340,112 +346,131 @@ void terminal_read_write_test(){
 }
 
 /* Test ouput NULL character */
-int putc_null_test(){
+int putc_null_test()
+{
 	TEST_HEADER;
 	putc('\0');
 	return PASS;
 }
 
 /* Test terminal write with null characters */
-int terminal_write_null_test(){
+int terminal_write_null_test()
+{
 	TEST_HEADER;
-	unsigned char buffer [] = {'\0', '\0'};
+	unsigned char buffer[] = {'\0', '\0'};
 	terminal_write(0, buffer, 2);
 	return PASS;
 }
 
 /* Test terminal write with size bigger than buffer */
-int terminal_write_size_test(){
+int terminal_write_size_test()
+{
 	TEST_HEADER;
-	unsigned char buffer [] = {'C', '4'};
+	unsigned char buffer[] = {'C', '4'};
 	terminal_write(0, buffer, 20);
 	return PASS;
 }
 
-//FILE TESTS
-//Coverage: open, close, and write directory
-//test the open functionality of files
-int file_open_test(){
+// FILE TESTS
+// Coverage: open, close, and write directory
+// test the open functionality of files
+int file_open_test()
+{
 	TEST_HEADER;
-	if (file_open((uint8_t *)"NULL") == 0){
+	if (file_open((uint8_t *)"NULL") == 0)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
-//test the close functionality of files
-int file_close_test(){
+// test the close functionality of files
+int file_close_test()
+{
 	TEST_HEADER;
-	if (file_close(0) == 0){
+	if (file_close(0) == 0)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
-//test the write functionality of files
-int file_write_test(){
+// test the write functionality of files
+int file_write_test()
+{
 	TEST_HEADER;
-	uint8_t * buf;
-	if (file_write(0, buf, 0) == -1){
+	uint8_t *buf;
+	if (file_write(0, buf, 0) == -1)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
-//test the open functionality of directories
-int directory_open_test(){
+// test the open functionality of directories
+int directory_open_test()
+{
 	TEST_HEADER;
-	if (directory_open((uint8_t *)"NULL") == 0){
+	if (directory_open((uint8_t *)"NULL") == 0)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
-//test the close functionality of directories
-int directory_close_test(){
+// test the close functionality of directories
+int directory_close_test()
+{
 	TEST_HEADER;
-	if (directory_close(0) == 0){
+	if (directory_close(0) == 0)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
-//test the write functionality of directories
-int directory_write_test(){
+// test the write functionality of directories
+int directory_write_test()
+{
 	TEST_HEADER;
-	uint8_t * buf;
-	if (directory_write(0, buf, 0) == -1){
+	uint8_t *buf;
+	if (directory_write(0, buf, 0) == -1)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
-//test to print the directory files to the terminal as a list
-//Coverage: open, close, read, and write directory
-int directory_read_test(){
+// test to print the directory files to the terminal as a list
+// Coverage: open, close, read, and write directory
+int directory_read_test()
+{
 	TEST_HEADER;
 	unsigned int i;
-	for (i = 0; i < 62; i++){
+	for (i = 0; i < 62; i++)
+	{
 		int temp = i;
-		unsigned char buffer [32];
-		if (directory_read(0, buffer, 0) == 0){
+		unsigned char buffer[32];
+		if (directory_read(0, buffer, 0) == 0)
+		{
 			return PASS;
 		}
 		i = temp;
 		terminal_write(0, buffer, 32);
-		buffer [0] = '\n';
+		buffer[0] = '\n';
 		terminal_write(0, buffer, 1);
 	}
 	return PASS;
 }
 
-//test to print the file to the terminal as a list
-//Coverage: open, close, read, and write file
-int file_read_test1(){
+// test to print the file to the terminal as a list
+// Coverage: open, close, read, and write file
+int file_read_test1()
+{
 	TEST_HEADER;
 	create_pcb(0);
-	char * fname = "frame0.txt";
-	int32_t file_fd = open((uint8_t *) fname);
+	char *fname = "frame0.txt";
+	int32_t file_fd = open((uint8_t *)fname);
 	unsigned char buffer[400];
 	unsigned int num = file_read(file_fd, buffer, 400);
 	terminal_write(file_fd, buffer, num);
@@ -453,14 +478,15 @@ int file_read_test1(){
 	return PASS;
 }
 
-//test the file system for the length of the larger name of files
-//Coverage: open, close, read, and write directory
-int file_read_test2(){
+// test the file system for the length of the larger name of files
+// Coverage: open, close, read, and write directory
+int file_read_test2()
+{
 	TEST_HEADER;
 	create_pcb(0);
-	//char * fname = "verylargetextwithverylongname.tx";
-	char * fname = "fish";
-	int32_t file_fd = open((uint8_t *) fname);
+	// char * fname = "verylargetextwithverylongname.tx";
+	char *fname = "fish";
+	int32_t file_fd = open((uint8_t *)fname);
 	unsigned char buffer[40000];
 	unsigned int num = file_read(file_fd, buffer, 40000);
 	terminal_write(file_fd, buffer, num);
@@ -470,88 +496,106 @@ int file_read_test2(){
 
 /* Checkpoint 3 tests */
 // Check for invalid input into PCB
-int find_pcb_test(){
+int find_pcb_test()
+{
 	TEST_HEADER;
-	if (find_pcb(9) == 0){
+	if (find_pcb(9) == 0)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
 /* Test if parsing cmd works*/
-int parse_cmd_test(){
+int parse_cmd_test()
+{
 	TEST_HEADER;
 	uint8_t cmd[MAX_CMD_SIZE];
-	if (parse_cmd((uint8_t *) "  shell  ", cmd) != 0){
+	if (parse_cmd((uint8_t *)"  shell  ", cmd) != 0)
+	{
 		return FAIL;
 	}
-	if (strncmp((int8_t *) "shell", (int8_t *) cmd, 5) == 0){
+	if (strncmp((int8_t *)"shell", (int8_t *)cmd, 5) == 0)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
 /* Check if text fail is exe */
-int exe_check_test_fail(){
+int exe_check_test_fail()
+{
 	TEST_HEADER;
 	uint8_t buffer[10000];
-	int8_t * cmd = "frame0.txt";
-	if (exe_check((uint8_t *) cmd, buffer) == -1){
+	int8_t *cmd = "frame0.txt";
+	if (exe_check((uint8_t *)cmd, buffer) == -1)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
 /* Check if shell is exe */
-int exe_check_test_pass(){
+int exe_check_test_pass()
+{
 	TEST_HEADER;
 	uint8_t buffer[10000];
-	int8_t * cmd = "shell";
-	if (exe_check((uint8_t *) cmd, buffer) > 0){
+	int8_t *cmd = "shell";
+	if (exe_check((uint8_t *)cmd, buffer) > 0)
+	{
 		return PASS;
 	}
 	return FAIL;
 }
 
-//Check that open and close works
-int open_close_test(){
+// Check that open and close works
+int open_close_test()
+{
 	TEST_HEADER;
 	create_pcb(0);
-	char * fname = "verylargetextwithverylongname.tx";
-	//char * fname = "fish";
-	int32_t file_fd = open((uint8_t *) fname);
-	file_descriptor_t * fd = find_pcb(file_fd);
-	if (fd->file_operations_table_ptr->open != file_open){
+	char *fname = "verylargetextwithverylongname.tx";
+	// char * fname = "fish";
+	int32_t file_fd = open((uint8_t *)fname);
+	file_descriptor_t *fd = find_pcb(file_fd);
+	if (fd->file_operations_table_ptr->open != file_open)
+	{
 		return FAIL;
 	}
-	if (fd->file_operations_table_ptr->close != file_close){
+	if (fd->file_operations_table_ptr->close != file_close)
+	{
 		return FAIL;
 	}
-	if (fd->file_operations_table_ptr->read != file_read){
+	if (fd->file_operations_table_ptr->read != file_read)
+	{
 		return FAIL;
 	}
-	if (fd->file_operations_table_ptr->write != file_write){
+	if (fd->file_operations_table_ptr->write != file_write)
+	{
 		return FAIL;
 	}
-	if (fd->flags != 1){
+	if (fd->flags != 1)
+	{
 		return FAIL;
 	}
 	close(file_fd);
-	if (fd->file_operations_table_ptr != 0){
+	if (fd->file_operations_table_ptr != 0)
+	{
 		return FAIL;
 	}
-	if (fd->flags != 0){
+	if (fd->flags != 0)
+	{
 		return FAIL;
 	}
 	return PASS;
 }
 
 // Test that read/write works
-int read_write_test(){
+int read_write_test()
+{
 	TEST_HEADER;
 	create_pcb(0);
-	char * fname = "frame1.txt";
-	int32_t file_fd = open((uint8_t *) fname);
+	char *fname = "frame1.txt";
+	int32_t file_fd = open((uint8_t *)fname);
 	unsigned char buffer[400];
 	unsigned int num = read(file_fd, buffer, 400);
 	write(1, buffer, num);
@@ -561,14 +605,16 @@ int read_write_test(){
 
 /* Checkpoint 4 tests */
 // Test get arg
-int get_arg_test(){
+int get_arg_test()
+{
 	TEST_HEADER;
 	create_pcb(0);
-	uint8_t * fname = (uint8_t *) "cat fish";
+	uint8_t *fname = (uint8_t *)"cat fish";
 	parse_second_arg(fname);
 	uint8_t buf[1024];
 	getargs(buf, 4);
-	if (strncmp((int8_t *)buf, (int8_t *)"fish", 4) == 0){
+	if (strncmp((int8_t *)buf, (int8_t *)"fish", 4) == 0)
+	{
 		return PASS;
 	}
 	return FAIL;
@@ -604,7 +650,8 @@ int paging_structure_test()
 int terminal_switch_test()
 {
 	TEST_HEADER;
-	if (terminal_switch(4) == -1){
+	if (terminal_switch(4) == -1)
+	{
 		return PASS;
 	}
 	return FAIL;
@@ -653,7 +700,7 @@ void launch_tests()
 	/* PAGING TEST */
 	// TEST_OUTPUT("paging_dereference_test", paging_dereference_test());
 	// TEST_OUTPUT("paging_dereference_test_fail", paging_dereference_test_fail());
-	
+
 	/* TERMINAL TEST */
 	// terminal_read_write_test();
 	// TEST_OUTPUT("putc null character test", putc_null_test());

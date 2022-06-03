@@ -9,7 +9,8 @@ static uint8_t master_mask; /* IRQs 0-7  */
 static uint8_t slave_mask;  /* IRQs 8-15 */
 
 /* Initialize the 8259 PIC; Disables all interrupts on the PICs initially */
-void i8259_init(void) {
+void i8259_init(void)
+{
     // Disable all interrupts for both PICs
     outb(PIC_MASK_ALL, MASTER_8259_DATA);
     outb(PIC_MASK_ALL, SLAVE_8259_DATA);
@@ -29,17 +30,19 @@ void i8259_init(void) {
     // Send information about the environment
     outb(ICW4, MASTER_8259_DATA);
     outb(ICW4, SLAVE_8259_DATA);
-    // Enable IRQ for the slave 
+    // Enable IRQ for the slave
     enable_irq(SLAVE_IRQ);
 }
 
-/* 
-    Enable (unmask) the specified IRQ 
+/*
+    Enable (unmask) the specified IRQ
     Input: irq_num: IRQ to enable
 */
-int32_t enable_irq(uint32_t irq_num) {
+int32_t enable_irq(uint32_t irq_num)
+{
     // If IRQ is out of range, skip
-    if (irq_num > 15 || irq_num < 0){
+    if (irq_num > 15 || irq_num < 0)
+    {
         return -1;
     }
     // Port value determining which PIC to set
@@ -47,12 +50,15 @@ int32_t enable_irq(uint32_t irq_num) {
     // Value of the bit mask for the PIC; when a bit is set, PIC ignores its request
     uint8_t mask_value;
     // If irq is less than 8, it corresponds to master
-    if (irq_num < NUM_IRQ){
+    if (irq_num < NUM_IRQ)
+    {
         port = MASTER_8259_DATA;
         // Get the current mask value for the PIC and then clear the bit mask for the corresponding irq
         mask_value = master_mask & ~(1 << irq_num);
         master_mask = mask_value;
-    }else{
+    }
+    else
+    {
         // Otherwise it corresponds to slave
         port = SLAVE_8259_DATA;
         // Offset by 8 to get slave's IRQ
@@ -66,13 +72,15 @@ int32_t enable_irq(uint32_t irq_num) {
     return 0;
 }
 
-/* 
-    Disable (mask) the specified IRQ 
+/*
+    Disable (mask) the specified IRQ
     Input: irq_num: IRQ to disable
 */
-int32_t disable_irq(uint32_t irq_num) {
+int32_t disable_irq(uint32_t irq_num)
+{
     // If IRQ is out of range, skip
-    if (irq_num > 15 || irq_num < 0){
+    if (irq_num > 15 || irq_num < 0)
+    {
         return -1;
     }
     // Port value determining which PIC to set
@@ -80,12 +88,15 @@ int32_t disable_irq(uint32_t irq_num) {
     // Value of the bit mask for the PIC; when a bit is set, PIC ignores its request
     uint8_t mask_value;
     // If irq is less than 8, it corresponds to master
-    if (irq_num < NUM_IRQ){
+    if (irq_num < NUM_IRQ)
+    {
         port = MASTER_8259_DATA;
         // Get the current mask value for the PIC and then clear the bit mask for the corresponding irq
         mask_value = master_mask | (1 << irq_num);
         master_mask = mask_value;
-    }else{
+    }
+    else
+    {
         // Otherwise it corresponds to slave
         port = SLAVE_8259_DATA;
         // Offset by 8 to get slave's IRQ
@@ -104,19 +115,24 @@ int32_t disable_irq(uint32_t irq_num) {
     send the EOI command to master. If it came from slave PIC, need to send command to both PICs
     Input: irq_num: IRQ value corresponding to the interrupt that has completed
 */
-int32_t send_eoi(uint32_t irq_num) {
+int32_t send_eoi(uint32_t irq_num)
+{
     // If IRQ is out of range, skip
-    if (irq_num > 15 || irq_num < 0){
+    if (irq_num > 15 || irq_num < 0)
+    {
         return -1;
     }
     // If IRQ is larger than 8, corresponds to slave
-    if (irq_num >= NUM_IRQ){
+    if (irq_num >= NUM_IRQ)
+    {
         // Offset by 8 to get slave's IRQ
         uint32_t slave_irq_num = irq_num - NUM_IRQ;
         // Send to both PICs
         outb(EOI | slave_irq_num, SLAVE_8259_PORT);
         outb(EOI | SLAVE_IRQ, MASTER_8259_PORT);
-    }else{
+    }
+    else
+    {
         // If less than 8, send to master only
         outb(EOI | irq_num, MASTER_8259_PORT);
     }

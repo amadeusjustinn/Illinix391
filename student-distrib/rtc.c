@@ -7,7 +7,7 @@
  *
  *  Input: none
  *  Output: none
- * 
+ *
  * @note  IRQ handler must be present in IDT table before calling this
  *            since the interrupt will happen immediately
  * @note  Will switch on IRQ with default 1024 Hz rate
@@ -35,7 +35,7 @@ void rtc_init(void)
  *            Reads value in register C and throws it away
  *  Input: none
  *  Output: none
- * 
+ *
  * @note  If register C is not read, another interrupt will not occur
  */
 void rtc_handler(void)
@@ -57,13 +57,13 @@ void rtc_handler(void)
 
 /**
  * @brief  Initialises RTC frequency to 2 Hz
- * 
+ *
  *  Input: filename
  *  Output: 0
- * 
+ *
  * @return 0 upon success
  */
-int32_t rtc_open (const uint8_t* filename)
+int32_t rtc_open(const uint8_t *filename)
 {
     // 2 Hz * ?? = 1024 Hz
     terminals[current_terminal_run].factor = FACTOR_INIT;
@@ -81,7 +81,7 @@ int32_t rtc_open (const uint8_t* filename)
  *
  * @return 0 upon success
  */
-int32_t rtc_close (int32_t fd)
+int32_t rtc_close(int32_t fd)
 {
     terminals[current_terminal_run].factor = 0;
     terminals[current_terminal_run].interrupt_count = 0;
@@ -93,10 +93,10 @@ int32_t rtc_close (int32_t fd)
  *
  *  Input: fd, buf, nbytes
  *  Output: 0
- * 
+ *
  * @return 0 when the next interrupt has occurred
  */
-int32_t rtc_read (int32_t fd, void* buf, int32_t nbytes)
+int32_t rtc_read(int32_t fd, void *buf, int32_t nbytes)
 {
     // Wait until handler has been called an appropriate number of times
     while (terminals[current_terminal_run].interrupt_count < terminals[current_terminal_run].factor)
@@ -113,11 +113,11 @@ int32_t rtc_read (int32_t fd, void* buf, int32_t nbytes)
  *
  *  Input: fd, buf, nbytes
  *  Output: 0, -1
- * 
+ *
  * @param buf Pointer referencing address containing desired frequency
  * @return    0 upon success, -1 upon failure (invalid frequency)
  */
-int32_t rtc_write (int32_t fd, const void* buf, int32_t nbytes)
+int32_t rtc_write(int32_t fd, const void *buf, int32_t nbytes)
 {
     // Acquire frequency of program by dereferencing buf
     uint32_t *buf_int32 = (uint32_t *)buf;

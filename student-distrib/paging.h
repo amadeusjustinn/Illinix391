@@ -15,9 +15,9 @@
 #define FOUR_KB_BOUNDARIES 4096    // Pages need to be aligned on 4 KiB boundaries
 
 // Backup video memory for the terminals
-#define TERMINAL_0_VIDEO 0xB9000   // VIDEO + 4KB
-#define TERMINAL_1_VIDEO 0xBA000   // VIDEO + 8KB
-#define TERMINAL_2_VIDEO 0xBB000   // VIDEO + 12KB 
+#define TERMINAL_0_VIDEO 0xB9000 // VIDEO + 4KB
+#define TERMINAL_1_VIDEO 0xBA000 // VIDEO + 8KB
+#define TERMINAL_2_VIDEO 0xBB000 // VIDEO + 12KB
 #define TERMINAL_0_VIDEO_12 TERMINAL_0_VIDEO >> TWELVE
 #define TERMINAL_1_VIDEO_12 TERMINAL_1_VIDEO >> TWELVE
 #define TERMINAL_2_VIDEO_12 TERMINAL_2_VIDEO >> TWELVE
@@ -25,8 +25,8 @@
 /* Number of terminals */
 #define NUM_TERMINALS 3
 
-// Backup video memory addresses for each terminal 
-uint32_t terminal_address [NUM_TERMINALS];
+// Backup video memory addresses for each terminal
+uint32_t terminal_address[NUM_TERMINALS];
 
 /* A 4 KiB page directory entry (goes into the 0th index of the page directory) */
 typedef union page_directory_entry_4K_t
