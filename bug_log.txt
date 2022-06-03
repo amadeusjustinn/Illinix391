@@ -1,0 +1,81 @@
+Checkpoint 1:
+Bug 1: Keyboard not printing more than 1 character
+
+	Fix 1: In the keyboard handler, used putc rather than printf.
+	
+	Fix 2: Forgot to return EOI, which causes the PIC to be in a busy state indefinitely.
+
+Bug 2: Multiple definitions of functions when using assembly file
+
+	Fix: Write separate file for assembly files
+
+Bug 3: The test output was not directing to a blue screen of death 
+	during keyboard and exception handle function call.
+	
+	Fix: Used separate test cases with TEST Handlers to directly call the excpetions.
+
+Bug 4: Kernel experienced a boot loop, and then crashed
+
+	Fix: Physical addresses for video memory and video memory in page table and page
+	     directory needed to be shifted by 12 bits to obtain 10 most significant bits.
+
+Checkpoint 2:
+Bug 1: Cursor randomly moves to different location
+	
+	Fix: Changed hex value to 8 instead of 16
+
+Bug 2: Kernel crashes when trying to do verticle scroll
+
+	Fix: Don't dereference memory when using memmove
+
+Bug 3: "1" not printed with correct frequencies when testing RTC
+
+	Fix: Factor was set to 32 768 / frequency, not 1024 / frequency
+
+Bug 4: The file system was overflowing in memory with a page error
+	Fix: Changed the address of the start and made sure to loop through the bytes to write in read data function without
+	running into infinite loop.
+
+Checkpoint 3:
+Bug 1: Execute has page fault.
+
+	Fix: Set the page directory to user_supervisor.
+
+Bug 2: Kernel crashes during execute. Caused by creating a buffer that is too large, causing it to overwrite kernel memory.
+
+	Fix: Reduced size of buffer.
+
+Bug 3: Page fault when using system calls.
+
+	Fix: Use pointer to PCB file_descriptor memory instead of 
+	pointer to object
+
+Checkpoint 4:
+Bug 1: Execute does not work in shell. This is due to read always returning num_bytes = 0.
+
+	Fix: Changed system call linkage from return 0 in EAX on 	success to not modifying EAX.
+
+Bug 2: Halt causes page fault due to closing parent PCB instead of current PCB.
+	
+	Fix: Run close on current PCB before swapping to parent.
+
+Bug 3: Halt causes page fault when trying to use specific functions in fd table.
+
+	Fix: Don't set the pointers to 0 when closing.
+
+Bug 4: Directory entry read failed on verylargetextwithverylongname.txt
+
+	Fix: Changed directory_read to handle buffer size greater than 32 to avoid truncating file name early
+
+Checkpoint 5:
+Bug 1: Terminal switch page faults
+
+	Fix: Add tss into terminal switch; Added separate parent esp/ebp in PCB struct since terminal switch was overwritting them
+
+Bug 2: Scheduling causes keyboard handler to print to wrong terminal
+
+	Fix: Modify putc to point to VIDEO mem in keyboard handler
+
+Bug 3: When running counter, switching terminals sometimes cause some of counter's video memory to show up in the new terminal
+
+	Fix: Change video_mem to point to correct video buffer in terminal_write
